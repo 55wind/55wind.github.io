@@ -80,10 +80,10 @@
         <ul>
           <li>vLLM pipeline on one L40S that groups related items into a few prompts per notice and checks that every quote is a verbatim substring of the notice.</li>
           <li>Per-item decisions that combine the model's judgment with rules from the statute package. On dev, removing a false positive was worth about 4.5 times more F1 than catching a miss, so each item's gate is tuned for precision.</li>
-          <li>Self-labeled a sample of the 20,000 unlabeled notices with frontier LLMs, and used bge-m3 embeddings for retrieval.</li>
+          <li>Self-labeled a sample of the 20,000 unlabeled notices with frontier LLMs to build a larger validation set.</li>
           <li>Paired bootstrap tests on dev to separate real gains from run-to-run noise. The result advanced the team to the final evaluation round.</li>
         </ul>
-        <p class="stack">Python, vLLM, gemma-4-26B-A4B-it, bge-m3</p>
+        <p class="stack">Python, vLLM, gemma-4-26B-A4B-it</p>
       </div>
     </div>
   </article>
