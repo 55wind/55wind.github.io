@@ -1,0 +1,325 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Kun Woo Park</title>
+<meta name="description" content="AI security researcher at the Information Security Lab, Sangmyung University. LLM pipelines, local agents and detectors that show their evidence.">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://55wind.github.io/">
+<meta property="og:title" content="Kun Woo Park">
+<meta property="og:description" content="AI security researcher. LLM pipelines, local agents and detectors that show their evidence.">
+<meta property="og:image" content="https://55wind.github.io/assets/og.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect x='6' y='6' width='20' height='20' transform='rotate(45 16 16)' fill='%23E9A825'/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,100..900&display=swap">
+<link rel="stylesheet" href="assets/site.css">
+</head>
+<body>
+<a class="skip" href="#work">Skip to projects</a>
+
+<header class="top wrap">
+  <a class="brand" href="#top">Kun Woo Park</a>
+  <nav aria-label="Sections">
+    <a href="#work">Work</a>
+    <a href="#research">Research</a>
+    <a href="#awards">Awards</a>
+    <a href="https://github.com/55wind">GitHub</a>
+  </nav>
+</header>
+
+<main>
+<section class="hero wrap" id="top">
+  <h1 class="name"><span>Kun Woo</span> <span>Park</span></h1>
+  <p class="name-ko" lang="ko">박건우</p>
+  <div class="hero-grid">
+    <div>
+      <p class="thesis">I build AI systems that hold up under attack<sup><a href="#fn1" aria-describedby="fn1">1</a></sup>, and I use AI to take repetitive work out of security<sup><a href="#fn2" aria-describedby="fn2">2</a></sup>.</p>
+      <ol class="notes">
+        <li id="fn1"><a href="#edge-trust">SARO</a>, trusted offloading for edge AI, and <a href="#agenttrace">AgentTrace</a>, which stops risky AI-agent actions before they run.</li>
+        <li id="fn2">A <a href="#procurement">compliance LLM</a> that quotes its evidence, and a <a href="#deepfake">deepfake detector</a> that writes the takedown request for the victim.</li>
+      </ol>
+    </div>
+    <dl class="facts">
+      <div>
+        <dt>Now</dt>
+        <dd>M.S. researcher at the Information Security Lab, Sangmyung University, advised by Prof. Daehee Seo.</dd>
+      </div>
+      <div>
+        <dt>Building</dt>
+        <dd>TakedownPilot, an AI analyst that verifies phishing and scam reports and drafts the takedown requests.</dd>
+      </div>
+      <div>
+        <dt>Elsewhere</dt>
+        <dd><a href="https://github.com/55wind">github.com/55wind</a></dd>
+      </div>
+    </dl>
+  </div>
+</section>
+
+<section class="section wrap" id="work" aria-labelledby="work-h">
+  <h2 id="work-h">Selected work</h2>
+
+  <article class="project" id="procurement">
+    <div class="meta">
+      <p>Aug – Sep 2026</p>
+      <p>DACON competition</p>
+      <p class="result">5th on the private leaderboard, Macro F1 0.77455</p>
+      <p class="links"><a href="https://github.com/55wind/procurement-compliance-llm">Code</a></p>
+    </div>
+    <div class="body">
+      <div class="text">
+        <h3>Public procurement compliance LLM</h3>
+        <p class="lead">Reads a public bid notice and decides, for each of 24 legal-violation items, whether the notice breaks the rule, quoting the exact sentence that proves it.</p>
+        <p class="constraint">Fixed model (gemma-4-26B-A4B-it), no fine-tuning, no internet, and two hours of inference for the whole test set.</p>
+        <ul>
+          <li>vLLM pipeline on one L40S that groups related items into a few prompts per notice and checks that every quote is a verbatim substring of the notice.</li>
+          <li>Per-item decisions that combine the model's judgment with rules from the statute package. On dev, removing a false positive was worth about 4.5 times more F1 than catching a miss, so each item's gate is tuned for precision.</li>
+          <li>Self-labeled a sample of the 20,000 unlabeled notices with frontier LLMs, and used bge-m3 embeddings for retrieval.</li>
+          <li>Paired bootstrap tests on dev to separate real gains from run-to-run noise. The result advanced the team to the final evaluation round.</li>
+        </ul>
+        <p class="stack">Python, vLLM, gemma-4-26B-A4B-it, bge-m3</p>
+      </div>
+    </div>
+  </article>
+
+  <article class="project" id="deepfake">
+    <div class="meta">
+      <p>2025 – 2026</p>
+      <p>CISC-S'25, KIISC</p>
+      <p class="result award">Excellent Paper Award</p>
+      <p>Registered software, Korea Copyright Commission</p>
+      <p class="links"><span class="private"><span class="bar" aria-hidden="true"></span>Private: lab code</span></p>
+    </div>
+    <div class="body has-fig">
+      <div class="text">
+        <h3>Deepfake detection and takedown requests</h3>
+        <p class="lead">A victim registers their face once. The system finds manipulated images of them online, confirms they are deepfakes, and sends the takedown request on their behalf.</p>
+        <ul>
+          <li>Face matching with MTCNN and InceptionResnetV1, then a ResNet50 and Xception ensemble to judge manipulation. In the paper the ensemble reached 0.830 top-1 accuracy, against 0.770 for ResNet and 0.790 for Xception alone.</li>
+          <li>Takedown emails go out automatically in the site's language. If no reply comes in time, the case is forwarded to the national cybercrime reporting system (ECRM).</li>
+          <li>Victim identity is stored only as SHA-256 hashes, and collected evidence is encrypted with AES-256-GCM.</li>
+          <li>In 2026 I led the team that turned it into a full dashboard for the ICT Challenge, with FastAPI and Celery workers.</li>
+        </ul>
+        <p class="stack">Python, PyTorch, MTCNN, ResNet50, Xception, FastAPI, Celery</p>
+      </div>
+      <figure class="notice-fig">
+        <div class="notice">
+          <p class="hdr"><span>To</span> <span class="bar" aria-label="hosting site, redacted"></span></p>
+          <p class="hdr"><span>Subject</span> Request for Deepfake Image Removal</p>
+          <p>Dear Sir/Madam,</p>
+          <p>I am the administrator of the Deepfake Detection and Removal Request System for victims of Deepfake abuse. We have identified a Deepfake image on your website. Our system kindly requests that you promptly remove the image in question.</p>
+          <p>If we do not receive a response within one week, we plan to report your website to the cybercrime reporting system.</p>
+        </div>
+        <figcaption>The English request template from the paper. The same request is generated in other languages, such as Vietnamese.</figcaption>
+      </figure>
+    </div>
+  </article>
+
+  <article class="project" id="agenttrace">
+    <div class="meta">
+      <p>2026</p>
+      <p>Personal security tool for Windows</p>
+      <p class="result">0.08 ms average gate latency</p>
+      <p class="links"><a href="https://github.com/55wind/agenttrace">Code</a> <a href="https://github.com/55wind/agenttrace/releases">Download</a></p>
+    </div>
+    <div class="body has-fig">
+      <div class="text">
+        <h3>AgentTrace</h3>
+        <p class="lead">Stops an AI agent's risky action before it runs, and traces a self-replicating prompt injection back to the first infected file and everything it reached.</p>
+        <ul>
+          <li>Rules, fingerprints and a provenance graph make every decision, and the LLM only explains it. Everything works with no network and no LLM.</li>
+          <li>A pre-execution gate answers allow, ask or block for each action, adding about 0.08 ms on average in measurement.</li>
+          <li>Tamper-evident log in SQLite with a hash chain, Sysmon event collection, and a read-only MCP server with four tools. Hooks into Claude Code.</li>
+          <li>Ships as a Windows app with a demo mode, so people who do not code can use it.</li>
+        </ul>
+        <p class="stack">Python, SQLite, Sysmon, MCP, pywebview</p>
+      </div>
+      <figure>
+        <img src="assets/img/agenttrace.webp" width="1360" height="770" loading="lazy" alt="AgentTrace dashboard in Korean reporting two threats: a self-replicating worm that started in an email and spread to three places, with one action blocked.">
+        <figcaption>Dashboard after a demo attack: a worm that started in an email reached three places, and one action was blocked.</figcaption>
+      </figure>
+    </div>
+  </article>
+
+  <article class="project" id="kb-agent">
+    <div class="meta">
+      <p>2026</p>
+      <p>8th KB AI Challenge</p>
+      <p class="result">Practitioners' Pick #4</p>
+      <p class="links"><a href="https://github.com/55wind/kb-ai-challenge-consumer-protection-agent">Code</a></p>
+    </div>
+    <div class="body has-fig">
+      <div class="text">
+        <h3>Financial consumer protection agent</h3>
+        <p class="lead">Helps a bank customer with a complaint: it finds the law and past dispute rulings that apply, shows how similar cases ended, and drafts the application.</p>
+        <ul>
+          <li>Runs on the bank's own machines with a small EXAONE model (1.2B, 4-bit) through Ollama, so complaint text never leaves the bank.</li>
+          <li>Real sources only: 112 dispute-mediation rulings, 217 statute articles and 221 regulator FAQs and interpretations, each with a source URL the schema requires.</li>
+          <li>Answers without a citation are rejected and retried. When retrieval is weak, it says there is no basis and points to the regulator's hotline instead of guessing.</li>
+          <li>Hybrid retrieval (KURE-v1, FAISS and BM25 fused with RRF) plus a knowledge graph. hit@4 of 98.8% on an 81-question golden set, kept as a regression guard. 207 tests.</li>
+        </ul>
+        <p class="stack">Python, FastAPI, Ollama, EXAONE, FAISS, BM25, React</p>
+      </div>
+      <figure>
+        <img src="assets/img/kb-cases.webp" width="1100" height="654" loading="lazy" alt="Chat answer in Korean listing similar dispute-mediation rulings on private fund mis-selling, each tagged upheld or dismissed and cited by ruling number.">
+        <figcaption>Similar real rulings, each tagged upheld or dismissed and cited by its ruling number.</figcaption>
+      </figure>
+    </div>
+  </article>
+
+  <article class="project" id="localpass">
+    <div class="meta">
+      <p>2026</p>
+      <p>Regional Innovation Talent Festival, AI·DX track</p>
+      <p>Team of four</p>
+      <p class="links"><a href="https://localpass-kappa.vercel.app">Live demo</a> <a href="https://github.com/55wind/localpass">Code</a></p>
+    </div>
+    <div class="body has-fig">
+      <div class="text">
+        <h3>LocalPass</h3>
+        <p class="lead">Shows foreign tourists Korean blog reviews they can trust. It hides undisclosed ads and AI-written posts, labels sponsored ones, and translates the rest.</p>
+        <ul>
+          <li>Each review passes PII masking, a prompt-injection screen, sponsorship-disclosure rules, a Qwen2.5-7B security and context check, and a local Fast-DetectGPT detector before it gets a trust stamp.</li>
+          <li>Reviews reach the model only as tagged data, outputs are forced into a JSON schema, and a review can never be marked trusted when the LLM step fails.</li>
+          <li>Deployed on Vercel, with the 7B model on a Modal GPU that starts on demand and shuts down five minutes after the last request.</li>
+        </ul>
+        <p class="stack">Python, FastAPI, Qwen2.5-7B, Fast-DetectGPT, TourAPI, Vercel, Modal</p>
+      </div>
+      <figure>
+        <img src="assets/img/localpass.webp" width="1360" height="750" loading="lazy" alt="LocalPass home page: Korean local reviews, checked for ads and AI. A sample review is flagged as a hidden ad because it promotes a discount code without disclosure.">
+        <figcaption>The live site in English. The sample review is flagged for promoting a discount code without disclosure.</figcaption>
+      </figure>
+    </div>
+  </article>
+
+  <article class="project" id="edge-trust">
+    <div class="meta">
+      <p>2025 – 2026</p>
+      <p>INTCOM 2026, KSII</p>
+      <p class="result award">Outstanding Paper Award</p>
+      <p>ETRI edge AI project</p>
+      <p class="links"><a href="https://github.com/55wind/edge-auth-manager-prototype-ISL">Auth prototype</a></p>
+    </div>
+    <div class="body has-fig">
+      <div class="text">
+        <h3>Trust for edge AI</h3>
+        <p class="lead">My thesis research: before an edge AI system offloads work to an end node, make sure that node can be trusted.</p>
+        <ul>
+          <li>SARO, a two-phase authentication scheme for secure adaptive reverse offloading. First author.</li>
+          <li>Security core for an ETRI edge AI project: authentication, authorization and audit for a KubeEdge cluster designed for 1,000 edge devices. 172 automated tests pass and 15 of 15 attack scenarios are blocked.</li>
+          <li>Auth manager prototype with mTLS between every service, certificate issue, renewal and revocation, an admin approval gate, and a TLS-only message bus that keeps buffering through key rotation.</li>
+        </ul>
+        <p class="stack">Python, Kubernetes, KubeEdge, mTLS, RabbitMQ, Docker</p>
+      </div>
+      <figure class="diagram">
+        <svg viewBox="0 0 560 150" role="img" aria-labelledby="saro-t">
+          <title id="saro-t">SARO flow: an end node passes phase 1, attestation, and phase 2, verification, before work is offloaded to it.</title>
+          <line x1="40" y1="56" x2="200" y2="56" class="ln"/>
+          <line x1="200" y1="56" x2="360" y2="56" class="ln"/>
+          <line x1="360" y1="56" x2="510" y2="56" class="ln dash"/>
+          <circle cx="40" cy="56" r="13" class="node"/>
+          <rect x="188" y="44" width="24" height="24" transform="rotate(45 200 56)" class="node"/>
+          <rect x="348" y="44" width="24" height="24" transform="rotate(45 360 56)" class="node hot"/>
+          <circle cx="510" cy="56" r="14" class="fill"/>
+          <text x="40" y="104" class="lb">End node</text>
+          <text x="200" y="104" class="lb">Phase 1</text>
+          <text x="200" y="126" class="lb sub">attest</text>
+          <text x="360" y="104" class="lb">Phase 2</text>
+          <text x="360" y="126" class="lb sub">verify</text>
+          <text x="510" y="104" class="lb">Offload</text>
+        </svg>
+        <figcaption>SARO in one line: work is offloaded only after the end node passes both phases.</figcaption>
+      </figure>
+    </div>
+  </article>
+</section>
+
+<section class="section wrap" id="more" aria-labelledby="more-h">
+  <h2 id="more-h">More projects</h2>
+  <ul class="index">
+    <li>
+      <h3><a href="https://github.com/55wind/jb-finai-challenge">JB Compliance Copilot</a></h3>
+      <p>Reviews financial ads while they are being written. A 28-rule engine plus LLM review, a simulator that shows how five consumer personas misread the copy, five languages, human approval and an audit log. 118 tests.</p>
+      <p class="ix-meta">2026, JB Financial Group Fin:AI Challenge</p>
+    </li>
+    <li>
+      <h3>NuriGuard</h3>
+      <p>Finds illegal ads injected into public-sector websites. Restores Unicode look-alike characters, rejoins split Hangul jamo and uncovers CSS-hidden text. Zero false positives across 64 pages from five live public websites.</p>
+      <p class="ix-meta">2026, MOIS and NIA contest <span class="private"><span class="bar" aria-hidden="true"></span>Private: team repo</span></p>
+    </li>
+    <li>
+      <h3><a href="https://github.com/55wind/matter-iot">Bedroom immune-defense node</a></h3>
+      <p>A Matter-over-Thread device on an nRF54LM20 DK that computes wall-surface humidity every half second and runs a humidifier and fan to stay out of mold conditions, even when the hub is offline.</p>
+      <p class="ix-meta"><span class="result award">Excellence Award</span>, AI@Home Matter AX Sprint 2026</p>
+    </li>
+    <li>
+      <h3><a href="https://github.com/55wind/tokenscore">TokenScore</a></h3>
+      <p>Credit scoring for AI startups from their LLM token and GPU billing data, with prepaid compute and revenue-based repayment. Rule-based scoring engine with unit tests, Next.js 16, WCAG 2.2 AA checked with axe-core.</p>
+      <p class="ix-meta">2026, fintech contest demo</p>
+    </li>
+    <li>
+      <h3>BrainPartner</h3>
+      <p>Judges an existing idea against patents, papers, products and past winners, then scores it on a contest's official rubric. Nine-stage pipeline on Cloud Run and Pub/Sub with Gemini, BM25 and embedding retrieval, and an evidence gate.</p>
+      <p class="ix-meta">2026, GCP and Vertex AI <span class="private"><span class="bar" aria-hidden="true"></span>Private</span></p>
+    </li>
+    <li>
+      <h3><a href="https://github.com/55wind/climate-table">Climate Table</a></h3>
+      <p>Move heatwave, drought or cold-snap sliders and watch cabbage, apple and rice prices respond. A ridge regression in pure Python on weather and wholesale price data, with no dependencies.</p>
+      <p class="ix-meta">2026, KMA Weather and Climate AI Hackathon</p>
+    </li>
+    <li>
+      <h3><a href="https://55wind.github.io/munjak-translator/">Munjak translator</a></h3>
+      <p>Rewrites Korean sentences in the voices of seven Chiikawa characters, using hand-written rules for Korean verb endings and irregular conjugation.</p>
+      <p class="ix-meta">2026, fan project. <a href="https://github.com/55wind/munjak-translator">Code</a></p>
+    </li>
+  </ul>
+</section>
+
+<section class="section wrap" id="research" aria-labelledby="research-h">
+  <h2 id="research-h">Research</h2>
+  <div class="split">
+    <p class="intro">I work in the Information Security Lab at Sangmyung University. My thesis is on trust in edge AI infrastructure. Earlier papers covered real-time protection for embedded systems, deepfakes and voice phishing. I am first author on all of them.</p>
+    <div>
+      <ol class="rows">
+        <li><span class="y">2026</span><span class="t">SARO: A Secure Adaptive Reverse Offloading using Trusted Two-Phase Authentication in Edge AI Infrastructure<span class="v">INTCOM 2026, KSII. <span class="result award">Outstanding Paper Award</span></span></span></li>
+        <li><span class="y">2026</span><span class="t">A Study on Reverse Offloading Optimization Based on Two-Stage Authentication for End Node Trust Verification<span class="v">CISC-S'26, KIISC</span></span></li>
+        <li><span class="y">2026</span><span class="t">Real-Time Protection Scheme for Embedded Systems Using a Slack Manager<span class="v">ICGHIT 2026</span></span></li>
+        <li><span class="y">2025</span><span class="t">Real-time Detection and Takedown Request System for Illicit Deepfake Content (for Victims)<span class="v">CISC-S'25, KIISC. <span class="result award">Excellent Paper Award</span></span></span></li>
+        <li><span class="y">2025</span><span class="t">A Study on the Dynamic Protection of Embedded Systems Based on Static MILP and Slack<span class="v">KSMS Spring Conference 2025</span></span></li>
+        <li><span class="y">2024</span><span class="t">Implementation of a Real-time Voice Phishing Prediction and Blocking System Based on Web Crawling and STT<span class="v">KIISC Chungcheong Conference 2024</span></span></li>
+      </ol>
+      <h3 class="sub-h">Patent</h3>
+      <ol class="rows">
+        <li><span class="y">2025</span><span class="t">AI-based Personalized Call-Care Service System<span class="v">KR 10-2025-0000516, pending. Co-inventor.</span></span></li>
+      </ol>
+    </div>
+  </div>
+</section>
+
+<section class="section wrap" id="awards" aria-labelledby="awards-h">
+  <h2 id="awards-h">Awards</h2>
+  <ol class="rows awards">
+    <li><span class="y">2026</span><span class="t">Outstanding Paper Award<span class="v">INTCOM 2026, KSII</span></span></li>
+    <li><span class="y">2026</span><span class="t">Excellence Award<span class="v">AI@Home Matter AX Sprint 2026, developer hackathon</span></span></li>
+    <li><span class="y">2026</span><span class="t">Top Excellence Award<span class="v">Sangmyung University Startup Idea Competition</span></span></li>
+    <li><span class="y">2025</span><span class="t">Excellent Paper Award<span class="v">KIISC Summer Conference (CISC-S'25)</span></span></li>
+    <li><span class="y">2025</span><span class="t">Excellence Award, AI/DX<span class="v">Regional Innovation Talent Development Joint Festival</span></span></li>
+    <li><span class="y">2024</span><span class="t">Excellence Award<span class="v">FSI AIxData Challenge, Financial Security Institute</span></span></li>
+    <li><span class="y">2024</span><span class="t">Top Excellence Award<span class="v">1st Fintech, Big Data and Smart Production Academic Festival, Sangmyung University</span></span></li>
+    <li><span class="y">2024</span><span class="t">Top Excellence Award<span class="v">SW-Centered University AI and Cloud Service Use-Case Contest, Sangmyung University</span></span></li>
+    <li><span class="y">2023</span><span class="t">Grand Prize<span class="v">SW-Centered University Generative AI Use-Case Contest, Sangmyung University</span></span></li>
+  </ol>
+</section>
+</main>
+
+<footer class="foot wrap">
+  <p>Kun Woo Park. Updated October 2026.</p>
+  <p><a href="https://github.com/55wind">GitHub</a> <a href="#top">Back to top</a></p>
+</footer>
+</body>
+</html>
